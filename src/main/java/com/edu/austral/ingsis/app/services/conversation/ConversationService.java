@@ -6,9 +6,7 @@ import java.util.List;
 
 public interface ConversationService {
 
-  Conversation save(Conversation conversation);
-
-  Conversation save(Long user1, Long user2);
+  void save(Long user1, Long user2);
 
   Conversation findById(Long id);
 

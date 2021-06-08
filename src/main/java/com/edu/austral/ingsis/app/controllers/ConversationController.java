@@ -32,7 +32,8 @@ public class ConversationController {
 
   @PostMapping("/conversation/{user1}/{user2}")
   public ResponseEntity<ConversationDTO> saveConversation(@PathVariable Long user1, @PathVariable Long user2) {
-    return ResponseEntity.ok(objectMapper.map(conversationService.save(user1, user2), ConversationDTO.class));
+    conversationService.save(user1, user2);
+    return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/conversation/{user1}/{user2}")
