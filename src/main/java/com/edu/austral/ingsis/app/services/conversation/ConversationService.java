@@ -8,11 +8,15 @@ public interface ConversationService {
 
   void save(Long user1, Long user2);
 
+  void setSeen(Long id);
+
   Conversation findById(Long id);
 
   Conversation findByUsers(Long user1, Long user2);
 
   List<Conversation> findByUser(Long user);
+
+  int getNotifications(Long id);
 
   void delete(Long id);
 }
