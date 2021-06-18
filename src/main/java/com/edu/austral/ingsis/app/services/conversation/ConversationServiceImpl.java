@@ -1,9 +1,7 @@
 package com.edu.austral.ingsis.app.services.conversation;
 
 import com.edu.austral.ingsis.app.entities.Conversation;
-import com.edu.austral.ingsis.app.entities.Message;
 import com.edu.austral.ingsis.app.repositories.ConversationRepository;
-import com.edu.austral.ingsis.app.services.message.MessageService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,21 +11,23 @@ import java.util.List;
 public class ConversationServiceImpl implements ConversationService {
 
   private final ConversationRepository conversationRepository;
-  private final MessageService messageService;
 
-  public ConversationServiceImpl(ConversationRepository conversationRepository, MessageService messageService) {
+  public ConversationServiceImpl(ConversationRepository conversationRepository) {
     this.conversationRepository = conversationRepository;
-    this.messageService = messageService;
   }
 
   @Override
-  public Conversation save(Conversation conversation) {
-    return conversationRepository.save(conversation);
+  public void save(Long user1, Long user2) {
+    if (conversationRepository.findByUsers(user1, user2).isEmpty())
+      conversationRepository.save(new Conversation(user1, user2, new ArrayList<>()));
   }
 
   @Override
-  public Conversation save(Long user1, Long user2) {
-    return conversationRepository.save(new Conversation(user1, user2, new ArrayList<>()));
+  public void setSeen(Long id, Long logged) {
+    Conversation conversation = findById(id);
+    if(conversation.getUser1().equals(logged)) conversation.setLastSeen1(conversation.getMessages().size());
+    else conversation.setLastSeen2(conversation.getMessages().size());
+    conversationRepository.save(conversation);
   }
 
   @Override
@@ -37,12 +37,19 @@ public class ConversationServiceImpl implements ConversationService {
 
   @Override
   public Conversation findByUsers(Long user1, Long user2) {
-    return conversationRepository.findByUsers(user1, user2);
+    return conversationRepository.findByUsers(user1, user2).get();
   }
 
   @Override
   public List<Conversation> findByUser(Long user) {
     return conversationRepository.findByUser(user);
+  }
+
+  @Override
+  public int getNotifications(Long id, Long logged) {
+    Conversation c = findById(id);
+    if (c.getUser1().equals(logged)) return c.getMessages().size() - c.getLastSeen1();
+    else return c.getMessages().size() - c.getLastSeen2();
   }
 
   @Override
