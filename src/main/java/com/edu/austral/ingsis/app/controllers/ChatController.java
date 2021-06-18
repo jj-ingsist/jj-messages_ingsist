@@ -12,6 +12,9 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "*")
 public class ChatController {
@@ -24,10 +27,15 @@ public class ChatController {
 
   @MessageMapping("/chat")
   @SendTo("/topic/messages")
-  public MessageDTO send(@Payload CreateMessageDTO message) {
+  public List<MessageDTO> send(@Payload CreateMessageDTO message) {
     String token = "Bearer " + message.getToken();
     String response = ConnectMicroservices.connectToUserMicroservice("/user/logged", HttpMethod.GET, token);
-    Message saved = messageService.save(message, Long.parseLong(ConnectMicroservices.getFromJson(response, "id")));
-    return new MessageDTO(message.getText(), saved.getReceiver_id(), saved.getSender_id());
+    messageService.save(message, Long.parseLong(ConnectMicroservices.getFromJson(response, "id")));
+    List<Message> messages = messageService.findByConversationId(message.getConversation_id());
+    List<MessageDTO> messageDTOS = new ArrayList<>();
+    for (Message m : messages) {
+      messageDTOS.add(new MessageDTO(m.getText(), m.getReceiver_id(), m.getSender_id()));
+    }
+    return messageDTOS;
   }
 }
