@@ -1,5 +1,7 @@
 package com.edu.austral.ingsis.app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -19,8 +21,20 @@ public class Message {
 
   private LocalDate date;
 
+  @JsonIgnore
   @ManyToOne
   private Conversation conversation;
+
+  public Message() {
+  }
+
+  public Message(String text, Long sender_id, Long receiver_id, LocalDate date, Conversation conversation) {
+    this.text = text;
+    this.sender_id = sender_id;
+    this.receiver_id = receiver_id;
+    this.date = date;
+    this.conversation = conversation;
+  }
 
   public Long getId() {
     return id;

@@ -1,21 +1,15 @@
 package com.edu.austral.ingsis.app.dtos.message;
 
-import java.time.LocalDate;
-
 public class MessageDTO {
 
-  private Long id;
-  private Long sender_id;
-  private Long receiver_id;
   private String text;
-  private LocalDate date;
+  private Long receiver_id;
+  private Long sender_id;
 
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
+  public MessageDTO(String text, Long receiver_id, Long sender_id) {
+    this.text = text;
+    this.receiver_id = receiver_id;
+    this.sender_id = sender_id;
   }
 
   public Long getSender_id() {
@@ -40,13 +34,5 @@ public class MessageDTO {
 
   public void setText(String text) {
     this.text = text;
-  }
-
-  public LocalDate getDate() {
-    return date;
-  }
-
-  public void setDate(LocalDate date) {
-    this.date = date;
   }
 }

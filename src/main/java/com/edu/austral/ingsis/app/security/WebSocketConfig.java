@@ -10,13 +10,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
-    config.enableSimpleBroker("/secured/user/queue/specific-user");
-    config.setApplicationDestinationPrefixes("/jibber-jabber");
-    config.setUserDestinationPrefix("/secured/user");
+    config.enableSimpleBroker("/topic");
+    config.setApplicationDestinationPrefixes("/conversation");
   }
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/secured/room").withSockJS();
+    registry.addEndpoint("/jibber-jabber").setAllowedOrigins("http://localhost:3000").withSockJS();
   }
 }

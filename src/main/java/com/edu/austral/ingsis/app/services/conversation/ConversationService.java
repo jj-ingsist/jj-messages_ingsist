@@ -6,15 +6,17 @@ import java.util.List;
 
 public interface ConversationService {
 
-  Conversation save(Conversation conversation);
+  void save(Long user1, Long user2);
 
-  Conversation save(Long user1, Long user2);
+  void setSeen(Long id, Long logged);
 
   Conversation findById(Long id);
 
   Conversation findByUsers(Long user1, Long user2);
 
   List<Conversation> findByUser(Long user);
+
+  int getNotifications(Long id, Long logged);
 
   void delete(Long id);
 }

@@ -2,14 +2,17 @@ package com.edu.austral.ingsis.app.controllers;
 
 import com.edu.austral.ingsis.app.dtos.conversation.ConversationDTO;
 import com.edu.austral.ingsis.app.services.conversation.ConversationService;
+import com.edu.austral.ingsis.app.utils.ConnectMicroservices;
 import com.edu.austral.ingsis.app.utils.ObjectMapper;
 import com.edu.austral.ingsis.app.utils.ObjectMapperImpl;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 public class ConversationController {
 
   private final ConversationService conversationService;
@@ -21,7 +24,10 @@ public class ConversationController {
   }
 
   @GetMapping("/conversation/{user1}/{user2}")
-  public ResponseEntity<ConversationDTO> getConversation(@PathVariable Long user1, @PathVariable Long user2) {
+  public ResponseEntity<ConversationDTO> getConversation(@PathVariable Long user1, @PathVariable Long user2,
+                                                         @RequestHeader(name = "Authorization") String token) {
+    String response = ConnectMicroservices.connectToUserMicroservice("/user/logged", HttpMethod.GET, token);
+    conversationService.setSeen(conversationService.findByUsers(user1, user2).getId(), Long.parseLong(ConnectMicroservices.getFromJson(response, "id")));
     return ResponseEntity.ok(objectMapper.map(conversationService.findByUsers(user1, user2), ConversationDTO.class));
   }
 
@@ -32,7 +38,8 @@ public class ConversationController {
 
   @PostMapping("/conversation/{user1}/{user2}")
   public ResponseEntity<ConversationDTO> saveConversation(@PathVariable Long user1, @PathVariable Long user2) {
-    return ResponseEntity.ok(objectMapper.map(conversationService.save(user1, user2), ConversationDTO.class));
+    conversationService.save(user1, user2);
+    return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/conversation/{user1}/{user2}")
