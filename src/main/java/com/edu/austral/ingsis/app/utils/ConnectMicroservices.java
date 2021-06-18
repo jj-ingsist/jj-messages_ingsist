@@ -28,7 +28,7 @@ public class ConnectMicroservices {
   }
 
   public static String connectToUserMicroservice(String url, HttpMethod method, String token) {
-    final ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:8080" + url,
+    final ResponseEntity<String> responseEntity = restTemplate.exchange("http://api-massages:8080" + url,
             method,
             getRequestEntity(token),
             String.class);
