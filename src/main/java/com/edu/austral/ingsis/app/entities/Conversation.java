@@ -15,8 +15,12 @@ public class Conversation {
 
   private Long user2;
 
-  @OneToMany(mappedBy = "conversation", fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToMany(mappedBy = "conversation", fetch = FetchType.EAGER, orphanRemoval = true)
   private List<Message> messages;
+
+  private int lastSeen1;
+
+  private int lastSeen2;
 
   public Conversation() {
 
@@ -58,5 +62,21 @@ public class Conversation {
 
   public void setMessages(List<Message> messages) {
     this.messages = messages;
+  }
+
+  public int getLastSeen1() {
+    return lastSeen1;
+  }
+
+  public void setLastSeen1(int lastSeen1) {
+    this.lastSeen1 = lastSeen1;
+  }
+
+  public int getLastSeen2() {
+    return lastSeen2;
+  }
+
+  public void setLastSeen2(int lastSeen2) {
+    this.lastSeen2 = lastSeen2;
   }
 }

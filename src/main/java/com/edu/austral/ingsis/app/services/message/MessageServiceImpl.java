@@ -3,7 +3,6 @@ package com.edu.austral.ingsis.app.services.message;
 import com.edu.austral.ingsis.app.dtos.message.CreateMessageDTO;
 import com.edu.austral.ingsis.app.entities.Conversation;
 import com.edu.austral.ingsis.app.entities.Message;
-import com.edu.austral.ingsis.app.entities.MessageStatus;
 import com.edu.austral.ingsis.app.repositories.MessageRepository;
 import com.edu.austral.ingsis.app.services.conversation.ConversationService;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,9 @@ public class MessageServiceImpl implements MessageService {
   public Message save(CreateMessageDTO message, Long senderId) {
     Conversation conversation = conversationService.findById(message.getConversation_id());
     Long receiverId = conversation.getUser1().equals(senderId) ? conversation.getUser2() : conversation.getUser1();
-    return messageRepository.save(new Message(message.getText(), senderId, receiverId, LocalDate.now(), MessageStatus.RECEIVED, conversation));
+    Message saved = messageRepository.save(new Message(message.getText(), senderId, receiverId, LocalDate.now(), conversation));
+    conversationService.setSeen(conversation.getId(), senderId);
+    return saved;
   }
 
   @Override

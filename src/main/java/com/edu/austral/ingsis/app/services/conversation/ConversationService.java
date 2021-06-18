@@ -8,7 +8,7 @@ public interface ConversationService {
 
   void save(Long user1, Long user2);
 
-  void setSeen(Long id);
+  void setSeen(Long id, Long logged);
 
   Conversation findById(Long id);
 
@@ -16,7 +16,7 @@ public interface ConversationService {
 
   List<Conversation> findByUser(Long user);
 
-  int getNotifications(Long id);
+  int getNotifications(Long id, Long logged);
 
   void delete(Long id);
 }

@@ -21,9 +21,6 @@ public class Message {
 
   private LocalDate date;
 
-  @Enumerated(value = EnumType.STRING)
-  private MessageStatus status;
-
   @JsonIgnore
   @ManyToOne
   private Conversation conversation;
@@ -31,12 +28,11 @@ public class Message {
   public Message() {
   }
 
-  public Message(String text, Long sender_id, Long receiver_id, LocalDate date, MessageStatus status, Conversation conversation) {
+  public Message(String text, Long sender_id, Long receiver_id, LocalDate date, Conversation conversation) {
     this.text = text;
     this.sender_id = sender_id;
     this.receiver_id = receiver_id;
     this.date = date;
-    this.status = status;
     this.conversation = conversation;
   }
 
@@ -78,14 +74,6 @@ public class Message {
 
   public void setDate(LocalDate date) {
     this.date = date;
-  }
-
-  public MessageStatus getStatus() {
-    return status;
-  }
-
-  public void setStatus(MessageStatus status) {
-    this.status = status;
   }
 
   public Conversation getConversation() {

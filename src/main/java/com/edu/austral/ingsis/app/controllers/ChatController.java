@@ -12,9 +12,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @CrossOrigin(origins = "*")
 public class ChatController {
@@ -25,23 +22,12 @@ public class ChatController {
     this.messageService = messageService;
   }
 
-  private final List<String> strings = new ArrayList<>();
-
   @MessageMapping("/chat")
   @SendTo("/topic/messages")
-  public String send(@Payload CreateMessageDTO message) {
-    strings.add(message.getText());
+  public MessageDTO send(@Payload CreateMessageDTO message) {
     String token = "Bearer " + message.getToken();
     String response = ConnectMicroservices.connectToUserMicroservice("/user/logged", HttpMethod.GET, token);
-    messageService.save(message, Long.parseLong(ConnectMicroservices.getFromJson(response, "id")));
-    return message.getText();
-  }
-
-  public List<String> getMessages() {
-    return strings;
-  }
-
-  public void empty() {
-    strings.clear();
+    Message saved = messageService.save(message, Long.parseLong(ConnectMicroservices.getFromJson(response, "id")));
+    return new MessageDTO(message.getText(), saved.getReceiver_id(), saved.getSender_id());
   }
 }

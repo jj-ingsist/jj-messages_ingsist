@@ -1,10 +1,7 @@
 package com.edu.austral.ingsis.app.services.conversation;
 
 import com.edu.austral.ingsis.app.entities.Conversation;
-import com.edu.austral.ingsis.app.entities.Message;
-import com.edu.austral.ingsis.app.entities.MessageStatus;
 import com.edu.austral.ingsis.app.repositories.ConversationRepository;
-import com.edu.austral.ingsis.app.repositories.MessageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,11 +11,9 @@ import java.util.List;
 public class ConversationServiceImpl implements ConversationService {
 
   private final ConversationRepository conversationRepository;
-  private final MessageRepository messageRepository;
 
-  public ConversationServiceImpl(ConversationRepository conversationRepository, MessageRepository messageRepository) {
+  public ConversationServiceImpl(ConversationRepository conversationRepository) {
     this.conversationRepository = conversationRepository;
-    this.messageRepository = messageRepository;
   }
 
   @Override
@@ -28,12 +23,11 @@ public class ConversationServiceImpl implements ConversationService {
   }
 
   @Override
-  public void setSeen(Long id) {
+  public void setSeen(Long id, Long logged) {
     Conversation conversation = findById(id);
-    for (Message m : conversation.getMessages()) {
-      m.setStatus(MessageStatus.SEEN);
-      messageRepository.save(m);
-    }
+    if(conversation.getUser1().equals(logged)) conversation.setLastSeen1(conversation.getMessages().size());
+    else conversation.setLastSeen2(conversation.getMessages().size());
+    conversationRepository.save(conversation);
   }
 
   @Override
@@ -52,11 +46,10 @@ public class ConversationServiceImpl implements ConversationService {
   }
 
   @Override
-  public int getNotifications(Long id) {
-    int notifications = 0;
+  public int getNotifications(Long id, Long logged) {
     Conversation c = findById(id);
-    for (Message m : c.getMessages()) if (!m.getStatus().equals(MessageStatus.SEEN)) notifications++;
-    return notifications;
+    if (c.getUser1().equals(logged)) return c.getMessages().size() - c.getLastSeen1();
+    else return c.getMessages().size() - c.getLastSeen2();
   }
 
   @Override

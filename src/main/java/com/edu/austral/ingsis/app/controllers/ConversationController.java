@@ -24,8 +24,10 @@ public class ConversationController {
   }
 
   @GetMapping("/conversation/{user1}/{user2}")
-  public ResponseEntity<ConversationDTO> getConversation(@PathVariable Long user1, @PathVariable Long user2) {
-    conversationService.setSeen(conversationService.findByUsers(user1, user2).getId());
+  public ResponseEntity<ConversationDTO> getConversation(@PathVariable Long user1, @PathVariable Long user2,
+                                                         @RequestHeader(name = "Authorization") String token) {
+    String response = ConnectMicroservices.connectToUserMicroservice("/user/logged", HttpMethod.GET, token);
+    conversationService.setSeen(conversationService.findByUsers(user1, user2).getId(), Long.parseLong(ConnectMicroservices.getFromJson(response, "id")));
     return ResponseEntity.ok(objectMapper.map(conversationService.findByUsers(user1, user2), ConversationDTO.class));
   }
 
