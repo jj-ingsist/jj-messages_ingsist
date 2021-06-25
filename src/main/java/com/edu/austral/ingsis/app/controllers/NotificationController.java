@@ -7,7 +7,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 public class NotificationController {
 
   private final ConversationService conversationService;
