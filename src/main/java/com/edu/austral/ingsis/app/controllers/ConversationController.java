@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 public class ConversationController {
 
   private final ConversationService conversationService;
@@ -46,5 +45,10 @@ public class ConversationController {
   public ResponseEntity<ConversationDTO> deleteConversation(@PathVariable Long user1, @PathVariable Long user2) {
     conversationService.delete(conversationService.findByUsers(user1, user2).getId());
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/print")
+  public String print() {
+    return "Holaaaa";
   }
 }
