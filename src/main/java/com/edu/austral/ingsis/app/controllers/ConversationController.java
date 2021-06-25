@@ -47,4 +47,9 @@ public class ConversationController {
     conversationService.delete(conversationService.findByUsers(user1, user2).getId());
     return ResponseEntity.noContent().build();
   }
+
+  @GetMapping("/print")
+  public String print() {
+    return "Holaaaa";
+  }
 }
