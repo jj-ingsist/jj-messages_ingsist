@@ -16,6 +16,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/jibber-jabber").setAllowedOrigins("http://localhost:3000").withSockJS();
+    registry.addEndpoint("/jibber-jabber").withSockJS();
   }
 }
